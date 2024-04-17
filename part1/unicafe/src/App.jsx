@@ -2,7 +2,15 @@ import { useState } from 'react'
 
 const Button = ({ handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
-const StatisticLine = ({ name, value, extra}) => <p>{name}: {value} {extra}</p>
+const StatisticLine = ({ name, value, extra}) => {
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{value}</td>
+      <td>{extra}</td>
+    </tr>
+  )
+}
 
 const Statistics = ({ good, neutral, bad}) => {
   let totalSum = good + neutral + bad
@@ -17,17 +25,18 @@ const Statistics = ({ good, neutral, bad}) => {
     )
   }else{
     return (
-      <div>
-        <StatisticLine name="Good" value={good} extra={null}/>
-        <StatisticLine name="Neutral" value={neutral} extra={null}/>
-        <StatisticLine name="Bad" value={bad} extra={null}/>
-        <StatisticLine name="All" value={totalSum} extra={null}/>
-        <StatisticLine name="Average" value={average} extra={null}/>
-        <StatisticLine name="Positive" value={positivePercentage} extra={"%"}/>
-      </div>
+      <table>
+          <tbody>
+            <StatisticLine name="Good" value={good} extra={null}/>
+            <StatisticLine name="Neutral" value={neutral} extra={null}/>
+            <StatisticLine name="Bad" value={bad} extra={null}/>
+            <StatisticLine name="All" value={totalSum} extra={null}/>
+            <StatisticLine name="Average" value={average.toFixed(1)} extra={null}/>
+            <StatisticLine name="Positive" value={positivePercentage.toFixed(1)} extra={"%"}/>
+          </tbody>
+      </table>
     )
   }
-  
 }
 
 const App = () => {
