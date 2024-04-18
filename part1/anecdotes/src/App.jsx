@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-const Display = ({text}) => <h2>{text}</h2>
+const Display = ({text}) => <h3>{text}</h3>
 
-const Button = () => <button>next anecdote</button>
+const Button = ({ handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
 const App = () => {
   const anecdotes = [
@@ -18,10 +18,17 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
 
+  const selectRandomQuote = () => {
+    let randomNumber = Math.floor(Math.random() * anecdotes.length)
+    console.log('Random number generated: ', randomNumber)
+
+    setSelected(randomNumber)
+  }
+
   return (
     <div>
       <Display text={anecdotes[selected]}/>
-      <Button/>
+      <Button handleClick={selectRandomQuote} text='Next Anecdote'/>
     </div>
   )
 }
