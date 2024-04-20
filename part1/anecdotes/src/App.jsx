@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-const Display = ({text}) => <h3>{text}</h3>
-
 const Button = ({ handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
 const App = () => {
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState([])
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -15,19 +16,37 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
-  const [selected, setSelected] = useState(0)
 
+  // initializing array for the first time
+  if(votes.length === 0){
+    console.log('votes', votes)
+    setVotes(Array(anecdotes.length).fill(0))
+  }else{
+    console.log('votes already initiated')
+  }
+
+  // selecting a new random quote
   const selectRandomQuote = () => {
     let randomNumber = Math.floor(Math.random() * anecdotes.length)
     console.log('Random number generated: ', randomNumber)
-
+    console.log('votes after number generated', votes)
     setSelected(randomNumber)
+  }
+
+  // voting for an anecdote
+  const voteAnecdote = () => {
+    let copyOfVotes = { ...votes }
+    copyOfVotes[selected] += 1
+    
+    console.log('voted votes', copyOfVotes)
+    return setVotes(copyOfVotes)
   }
 
   return (
     <div>
-      <Display text={anecdotes[selected]}/>
+      <h3>{anecdotes[selected]}</h3>
+      <h4>has {votes[selected]} votes</h4>
+      <Button handleClick={voteAnecdote} text='Vote'/>
       <Button handleClick={selectRandomQuote} text='Next Anecdote'/>
     </div>
   )
