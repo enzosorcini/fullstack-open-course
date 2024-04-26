@@ -16,12 +16,27 @@ const Content = ({ parts }) => {
   )
 }
 
+const TotalExercises = ({ parts }) => {
+  let totalExercises = parts.reduce((sum, part) => {
+    return sum + part.exercises
+  }, 0)
+  
+  console.log('Total sum', totalExercises);
+
+  return (
+    <div>
+      <p>Total of {totalExercises} exercises</p>
+    </div>
+  )
+}
+
 const Course = ({ course }) => {
   console.log('course sent to Course', course);
   return (
     <div>
       <Header text={course.name}/>
       <Content parts={course.parts} />
+      <TotalExercises parts={course.parts} />
     </div>
   )
 }
