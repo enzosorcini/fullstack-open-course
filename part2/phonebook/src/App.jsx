@@ -5,12 +5,22 @@ const App = () => {
     { name: 'Arto Hellas' }
   ]) 
   const [newName, setNewName] = useState('')
-
+  
   const addPerson = (event) => {
     event.preventDefault()
     const newPerson = { name: newName}
-    setPersons( persons.concat(newPerson))
-    setNewName('')
+
+    const notExistsInPhonebook = persons.every( person => JSON.stringify(person) !== JSON.stringify(newPerson))
+    console.log('after function', notExistsInPhonebook);
+
+    if(notExistsInPhonebook){
+      console.log('new person');
+      setPersons( persons.concat(newPerson) )
+      setNewName('')
+    }else{
+      console.log('person already exists');
+      alert(`${newName} already exists in the phonebook`)
+    }
   }
 
   const handleNameChange = (event) => {
