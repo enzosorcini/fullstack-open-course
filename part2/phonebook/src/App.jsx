@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import Phonebook from './components/PhoneBook'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -13,7 +16,6 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber, id: persons.length + 1}
 
     const notExistsInPhonebook = persons.every( person => JSON.stringify(person.name).toLowerCase() !== JSON.stringify(newPerson.name).toLowerCase())
-    console.log('after function', notExistsInPhonebook);
 
     if(notExistsInPhonebook){
       console.log('new person', newPerson);
@@ -33,35 +35,26 @@ const App = () => {
   const handleFilterChange = filterEvent => setFilter(filterEvent.target.value)
 
   let filteredPhonebook;
-  console.log('filter status', filter);
   if (filter === '') {
-    console.log('empty filter', filter);
     filteredPhonebook = persons
   }else{
-    console.log('filter active', filter);
     filteredPhonebook = persons.filter( person => person.name.toLowerCase().includes(filter.toLowerCase()))
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter names with: <input value={filter} onChange={handleFilterChange}/></div>
-      <h2>Add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        { filteredPhonebook.map( person => <li key={person.id}>{person.name} {person.number}</li>)}
-      </ul>
+      <Filter filterState={filter} filterHandler={handleFilterChange}/>
+      <h3>Add a new</h3>
+      <PersonForm
+        handleSubmit={addPerson}
+        nameState={newName}
+        nameHandler={handleNameChange}
+        numberState={newNumber}
+        numberHandler={handleNumberChange}
+      />
+      <h3>Numbers</h3>
+      <Phonebook persons={filteredPhonebook}/>
     </div>
   )
 }
