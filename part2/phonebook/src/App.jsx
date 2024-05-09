@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personsService from './services/persons'
+
 import Phonebook from './components/PhoneBook'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
@@ -11,25 +12,31 @@ const App = () => {
   const [ filter, setFilter ] = useState('')
   
   useEffect( () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then( response => {
-        console.log('response fulfilled', response.data)
-        setPersons(response.data)
+    console.log('first render')
+    personsService
+      .getAll()
+      .then( phonebookContacts => {
+        console.log('response fulfilled', phonebookContacts)
+        setPersons(phonebookContacts)
       })
   }, [])
   
   const addPerson = (event) => {
     event.preventDefault()
-    const newPerson = { name: newName, number: newNumber, id: persons.length + 1}
+    const newPerson = { name: newName, number: newNumber}
 
     const notExistsInPhonebook = persons.every( person => JSON.stringify(person.name).toLowerCase() !== JSON.stringify(newPerson.name).toLowerCase())
 
     if(notExistsInPhonebook){
-      console.log('new person', newPerson);
-      setPersons( persons.concat(newPerson) )
-      setNewName('')
-      setNewNumber('')
+      console.log('new person', newPerson)
+      personsService
+        .create(newPerson)
+        .then( returnedNewPerson => {
+          setPersons(persons.concat(returnedNewPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch( error => console.log('error creating new person', error))
     }else{
       console.log('person already exists', newPerson);
       alert(`${newName} already exists in the phonebook`)
