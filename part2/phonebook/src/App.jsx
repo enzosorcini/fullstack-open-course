@@ -19,6 +19,7 @@ const App = () => {
         console.log('response fulfilled', phonebookContacts)
         setPersons(phonebookContacts)
       })
+      .catch( error => console.log('error on first render', error))
   }, [])
   
   const addPerson = (event) => {
@@ -49,6 +50,21 @@ const App = () => {
 
   const handleFilterChange = filterEvent => setFilter(filterEvent.target.value)
 
+  const handleDelete = id => {
+    console.log('delete person', id)
+    const personToDelete = persons.find( person => person.id === id)
+
+    if(window.confirm(`Delete ${personToDelete.name}?`)){
+      personsService
+        .eliminate(personToDelete.id)
+        .then( deletedPerson => {
+          console.log('deleted person', deletedPerson)
+          setPersons(persons.filter(person => person.id !== id ))
+        })
+        .catch( error => console.log('error deleting person', error))
+    }
+  }
+  
   let filteredPhonebook;
   if (filter === '') {
     filteredPhonebook = persons
@@ -69,7 +85,7 @@ const App = () => {
         numberHandler={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Phonebook persons={filteredPhonebook}/>
+      <Phonebook persons={filteredPhonebook} handleDelete={handleDelete}/>
     </div>
   )
 }
