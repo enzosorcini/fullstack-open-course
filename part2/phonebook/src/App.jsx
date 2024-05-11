@@ -26,7 +26,7 @@ const App = () => {
     event.preventDefault()
     const newPerson = { name: newName, number: newNumber}
 
-    const notExistsInPhonebook = persons.every( person => JSON.stringify(person.name).toLowerCase() !== JSON.stringify(newPerson.name).toLowerCase())
+    const notExistsInPhonebook = persons.every(person => JSON.stringify(person.name).toLowerCase() !== JSON.stringify(newPerson.name).toLowerCase())
 
     if(notExistsInPhonebook){
       console.log('new person', newPerson)
@@ -40,7 +40,19 @@ const App = () => {
         .catch( error => console.log('error creating new person', error))
     }else{
       console.log('person already exists', newPerson);
-      alert(`${newName} already exists in the phonebook`)
+      if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)){
+        const personInPhonebook = persons.find(person => JSON.stringify(person.name).toLowerCase() === JSON.stringify(newPerson.name).toLowerCase())
+        console.log('person to update', personInPhonebook);
+        //call service for updating person
+        personsService
+          .update(personInPhonebook.id, newPerson)
+          .then(updatedPerson => {
+            console.log('updated person in server', updatedPerson)
+            setPersons(persons.map(p => p.id !== updatedPerson.id ? p : updatedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     }
   }
 
