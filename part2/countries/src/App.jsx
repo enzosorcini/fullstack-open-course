@@ -9,6 +9,7 @@ import Filter from './components/Filter'
 const App = () => {
   const [ countries, setCountries ] = useState([])
   const [ filter, setFilter] = useState('')
+  const [ country, setCountry ] = useState('')
 
   useEffect( () => {
     countriesService
@@ -19,6 +20,10 @@ const App = () => {
   }, [])
 
   const handleFilterChange = (filterEvent) => setFilter(filterEvent.target.value)
+
+  const handleShowCountry = (country) => {
+    setCountry(country)
+}
 
   let filteredCountries;
   if (filter === '') {
@@ -40,13 +45,20 @@ const App = () => {
           <Country country={filteredCountries[0]}/>
         </div>
       )
+    }else if (country !== ''){
+      return (
+        <div>
+          <Filter filterState={filter} filterHandler={handleFilterChange}/>
+          <Country country={country}/>
+        </div>
+      )
     }
   }
 
   return (
     <div>
       <Filter filterState={filter} filterHandler={handleFilterChange}/>
-      <CountriesList countries={filteredCountries}/>
+      <CountriesList countries={filteredCountries} handleShow={handleShowCountry}/>
     </div>
   )
 }

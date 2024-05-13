@@ -1,6 +1,8 @@
-const CountriesList = ({ countries }) => {
+const CountriesList = ({ countries, handleShow }) => {
+  console.log('showing list', countries);
+
   return (
-    countries.map(country => <li key={country.name.official}>{country.name.common}</li>)
+    countries.map(country => <li key={country.name.official}> {country.name.common} <button onClick={() => handleShow(country)}>show</button></li>)
   )
 }
 
