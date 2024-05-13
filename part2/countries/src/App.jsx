@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react'
 
 import countriesService from './services/countries'
 
+import CountriesList from './components/countriesList'
+import Country from './components/Country'
+import Filter from './components/Filter'
+
 const App = () => {
   const [ countries, setCountries ] = useState([])
   const [ filter, setFilter] = useState('')
 
   useEffect( () => {
-    console.log('second render', countries);
     countriesService
       .getAll()
       .then(allCountries => {
-        console.log('countries obtained', allCountries);
         setCountries(allCountries)
       })
   }, [])
@@ -20,28 +22,22 @@ const App = () => {
 
   let filteredCountries;
   if (filter === '') {
-    filteredCountries = countries
+    filteredCountries = []
   }else{
-    filteredCountries = countries.filter(country => country.name.official.toLowerCase().includes(filter.toLowerCase()))
+    filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(filter.toLowerCase()))
 
     if (filteredCountries.length > 10) {
       return (
         <div>
-          Find Country: <input value={filter} onChange={handleFilterChange}/>
+          <Filter filterState={filter} filterHandler={handleFilterChange}/>
           <p>Too many countries, please specify another filter</p>
         </div>
       )
     }else if (filteredCountries.length === 1) {
-      const country = filteredCountries[0]
-      console.log('country object', country);
       return (
         <div>
-          Find Country: <input value={filter} onChange={handleFilterChange}/>
-          <h2>{country.name.common}</h2>
-          <p>Capital: {country.capital}</p>
-          <p>Area: {country.area}</p>
-          <h3>Languages:</h3>
-          <p>check how to convert object with multiple key-values into array</p>
+          <Filter filterState={filter} filterHandler={handleFilterChange}/>
+          <Country country={filteredCountries[0]}/>
         </div>
       )
     }
@@ -49,10 +45,8 @@ const App = () => {
 
   return (
     <div>
-      Find Country: <input value={filter} onChange={handleFilterChange}/>
-      <ul>
-        {filteredCountries.map(country => <li key={country.name.official}>{country.name.common}</li>)}
-      </ul>
+      <Filter filterState={filter} filterHandler={handleFilterChange}/>
+      <CountriesList countries={filteredCountries}/>
     </div>
   )
 }
